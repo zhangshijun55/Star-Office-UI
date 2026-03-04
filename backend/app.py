@@ -496,7 +496,6 @@ USER_MODEL_TO_PROVIDER_MODELS = {
     ],
     "nanobanana-2": [
         "gemini-2.5-flash-image",
-        "gemini-2.0-flash-exp-image-generation",
     ],
 }
 

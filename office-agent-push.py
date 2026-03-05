@@ -33,8 +33,16 @@ STALE_STATE_TTL_SECONDS = int(os.environ.get("OFFICE_STALE_STATE_TTL", "600"))
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "office-agent-state.json")
 
 # 优先读取本机 OpenClaw 工作区的状态文件（更贴合 AGENTS.md 的工作流）
-# 支持自动发现，减少对方手动配置成本。
+# 支持自动发现，减少对方手动配置成本，且避免硬编码绝对路径：
+# - 优先使用环境变量 OPENCLAW_HOME / OPENCLAW_WORKSPACE_DIR
+# - 其次使用当前用户 HOME/.openclaw
+# - 再回落到当前工作目录与脚本所在目录
+OPENCLAW_HOME = os.environ.get("OPENCLAW_HOME") or os.path.join(os.path.expanduser("~"), ".openclaw")
+OPENCLAW_WORKSPACE_DIR = os.environ.get("OPENCLAW_WORKSPACE_DIR") or os.path.join(OPENCLAW_HOME, "workspace")
+
 DEFAULT_STATE_CANDIDATES = [
+    os.path.join(OPENCLAW_WORKSPACE_DIR, "star-office-ui", "state.json"),
+    os.path.join(OPENCLAW_WORKSPACE_DIR, "state.json"),
     "/root/.openclaw/workspace/Star-Office-UI/state.json",  # 当前仓库（大小写精确）
     "/root/.openclaw/workspace/star-office-ui/state.json",  # 历史/兼容路径
     "/root/.openclaw/workspace/state.json",
